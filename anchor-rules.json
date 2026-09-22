@@ -1,5 +1,5 @@
 {
-  "v": 37,
+  "v": 38,
   "_说明": "远程锚点/规则覆盖表（纯 JSON、非可执行代码，符合 Chrome Web Store 远程配置政策）。作用：任何平台改版时只改这里并部署，全量用户 24h 内（或下次启动）自动生效，无需发版扩展、无需商店审核。覆盖范围：容器选择器 / 排除规则 / 尺寸门槛 / URL 清洗链 / 评论风控词表与阈值；平台块 common、jd、tb、ali(1688/阿里)、review(评论风控)、pdd。【必读·部署位置】本文件必须部署到**公开可访问**的地址。扩展按以下顺序尝试：  1) https://www.facailo.xyz/anchor-rules.json  2) https://facailo.xyz/anchor-rules.json （主源，站点根目录，已在 host_permissions 内）  3) https://raw.githubusercontent.com/zhaoheng588-tech/dianshang-caiji-dashi/main/anchor-rules.json  4) https://cdn.jsdelivr.net/gh/zhaoheng588-tech/dianshang-caiji-dashi@main/anchor-rules.json  ⚠ 3/4 指向**私有仓库**：未登录客户端恒 404（已实测），因此实际只有 1/2 可用。生效链路：worker 的 aisAnchorRules 通道读取本文件 -> AisAnchors.merge() 深合并覆盖内置 DEFAULTS；8s 超时、24h 缓存、任一源成功即停、全失败回落内置默认（不影响采集）。取值器（代码侧）：AisAnchors.sel/get 取字符串；arr 取数组；num 取数字；norm 编译 URL 清洗链。  norm 的值是 [[正则字符串, 替换串, flags?], ...]；远程正则非法时该链**整体回落**代码内置链（安全）。  【重要语义】空数组 [] = 不覆盖、用代码内置值（无法用 [] 清空词表）；要覆盖必须给**非空**数组。约束：键必须是 lib/anchor-registry.js 中已存在的键（未知键被静默忽略），值必须与注册表**同类型**；  测试 test-anchor-consistency.cjs 与 test-anchor-rules-guard.cjs 会拦截「键未知 / 类型不符 / 与注册表默认值不一致」。词表类（review.pos / review.hardNeg / review.cats）与正则类（*Re）均可整表替换；算法（扫描/豁免/分层）不在本文件。  |  v11: 新增 amazon 段（亚马逊首次接入必须发版；此后改版可只推此段，已通键：aplus / detailMinEdge）  |  v13: amazon.detailMinEdge 还原为 500（v12 曾临时置 777 做「不改版推送」A/B 实证）  |  v14: common.flags 平台白名单（改这里 + 点面板「立即更新规则」即可隐藏/放开平台，无需发版）  |  v17: 移除 plat.douyin（抖音已在 v1.2.300 整体下线：Web 端无公开商品页）",
   "common": {
     "_远程策略说明": "v21 起：尺寸筛选等【行为策略】也可远程下发——改这里并部署即全量生效，无需用户更新插件（纯 JSON 数据，非可执行代码）",
@@ -1535,7 +1535,12 @@
     ],
     "wdjMaxRunsPerHour": 20,
     "wdjBlockMin": 10,
-    "wdjHardBlockRe": "USER_VALIDATE|RGV587|bxpunish|punish|_____tmd_|TRAFFIC_LIMIT|FAIL_SYS_.*LIMIT|SLIDE|captcha|NC_[A-Z]+|需要验证|安全验证|滑块"
+    "wdjHardBlockRe": "USER_VALIDATE|RGV587|bxpunish|punish|_____tmd_|TRAFFIC_LIMIT|FAIL_SYS_.*LIMIT|SLIDE|captcha|NC_[A-Z]+|需要验证|安全验证|滑块",
+    "descPayloadAllowDup": false,
+    "descHostRe": "alicdn\\.com|360buyimg\\.com|cbuimg\\.com|tbcdn\\.cn|pddpic\\.com|yangkeduo\\.com|media-amazon\\.com|images-amazon\\.com",
+    "descBadRe": "review|comment|rate|recommend|guess|like|similar|coupon|service|nav|crumb",
+    "descAdaptiveTopPx": 1200,
+    "descBadBoxRe": "review|comment|rate-|rating|feedback|recommend|guess|like|similar|coupon|service|nav|crumb|elevator|waist"
   },
   "jd": {
     "skuItem": ".specification-item-sku",
